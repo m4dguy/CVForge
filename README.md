@@ -1,13 +1,12 @@
-#CVForge 0.2.0 beta
-To be pushed next week. In case of interest, feel free to contact me.
+CVForge 0.2.0 beta
+Pre-built jars are available in the "build" directory.
+Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
+If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
+A report should contain error messages, a list of steps leading to the bug and the image you used. 
 
-Soon to be fixed bugs and limitations: 
-Only single-channel (gray-scale) images are supported.
-No support for macros and image stacks.
-Windows-only.
-
-You can find the newest version on github:
-https://github.com/m4dguy/CVForge
+Soon to be fixed bugs and limitations:
+Windows-only support. 
+Only works with Fiji, not with ImageJ.
 
 
 
@@ -21,41 +20,39 @@ http://opencv.org/opencv-java-api.html
 
 
  
-#Why CVForge might be for you
+Why CVForge might be for you
 
-##Considerable speed boost:
+Expand your ImageJ functionality:
+OpenCV is a massive library containing a vast selection of cutting-edge methods.
+It is actively maintained and gets updated and extended regularly.
+If ImageJ is missing something you are looking for, you might find it here.
+
+Considerable speed boost:
 Under-the-hood usage of C/C++ implementations lets you perform many operations in the blink of an eye.
 Most methods you already know from ImageJ run faster and smoother here.
 
-##Expand your ImageJ functionality:
-OpenCV is a massive library containing a vast selection of cutting-edge methods.
-If ImageJ is missing something you are looking for, you might find it here.
-
-##Comfortable user-interface: 
+Comfortable user-interface: 
 OpenCV is a complex library which is meant to be used by programmers.
-CVForge provides you a graphical user interface to use OpenCV in the most comfortable way possible.
-Easily reimplement code from tutorials by clicking your way through the CVForge's interface!
+CVForge provides a graphical user interface to use OpenCV in the most comfortable way possible.
+Easily reimplement code from tutorials by clicking your way through the interface!
 
-##Independent of OpenCV version:
-Download the newest OpenCV version or use one of the earlier versions.
-OpenCV is an actively maintained library which gets updated and extended regularly.
-You are also free to load and use your own build of the OpenCV library.
+Independent of OpenCV version:
+Download the latest OpenCV version or use an earlier one.
+You are free to load and use your own build of the OpenCV library.
 No matter your preference, you can switch between different versions on-the-fly and choose the one which suits you best.
 
-##Interface for Scripting:
+Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.
-CVForge itself uses converters and gives you access to them for your own scripts.
+CVForge itself uses converters and gives you access to them through the CVForgeConverion jar for your own scripts.
 
-Dynamically switches between x64/x86:
-No matter if x86 or x64, CVForge runs on both architectures and dynamically switches to the one currently running.
+Flexible support:
+No matter if x86 or x64, CVForge runs on both architectures and dynamically switches to the one you currently use.
 
 
+Installation:
+* Copy "CVForge_[version number].jar", "CVForgeConversion.jar" and "ReflectionTools.jar" into the ImageJ plugin folder.
 
-#Installation:
-* Copy "CVForge_[version number].jar" and "CVForgeExecution.jar" into the ImageJ plugin folder.
-* Install an OpenCV jar as described below.
-
-##Automatic OpenCV jar installation:
+Automatic OpenCV jar installation:
 * Launch CVForge from inside of ImageJ
 * In CVForge, click "Plugin" > "Install"
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
@@ -64,7 +61,7 @@ No matter if x86 or x64, CVForge runs on both architectures and dynamically swit
 * CVForge will copy the necessary files into the plugin folder of ImageJ
 * Restart ImageJ
 
-##Manual OpenCV jar installation:
+Manual OpenCV jar installation:
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
 * Go to "build" > "java"
 * Copy-paste the content of this folder (subfolers included!) into ImageJ's plugin folder
