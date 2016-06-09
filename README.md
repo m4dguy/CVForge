@@ -1,4 +1,4 @@
-== CVForge 0.2.0 beta ==
+## CVForge 0.2.0 beta
 Pre-built jars are available in the "build" directory.
 Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
@@ -20,7 +20,7 @@ Use the guides and documentation on the OpenCV website for detailed information 
 
 
  
-== Why CVForge might be for you == 
+## Why CVForge might be for you
 
 Expand your ImageJ functionality:
 OpenCV is a massive library containing a vast selection of cutting-edge methods.
