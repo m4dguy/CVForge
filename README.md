@@ -1,4 +1,4 @@
-CVForge 0.2.0 beta
+== CVForge 0.2.0 beta ==
 Pre-built jars are available in the "build" directory.
 Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
@@ -14,13 +14,13 @@ CVForge aims to close the gap between the popular tool ImageJ and the powerful O
 This plugin gives access to all methods of OpenCV, independent from it's version.
 Expand and boost ImageJ with OpenCV's selection of powerful methods.
 Use the guides and documentation on the OpenCV website for detailed information on efficient usage:
-http://docs.opencv.org/2.4/doc/tutorials/tutorials.html
-http://docs.opencv.org/2.4/modules/refman.html
-http://opencv.org/opencv-java-api.html
+* http://docs.opencv.org/2.4/doc/tutorials/tutorials.html
+* http://docs.opencv.org/2.4/modules/refman.html
+* http://opencv.org/opencv-java-api.html
 
 
  
-Why CVForge might be for you
+== Why CVForge might be for you == 
 
 Expand your ImageJ functionality:
 OpenCV is a massive library containing a vast selection of cutting-edge methods.
