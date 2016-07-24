@@ -21,11 +21,10 @@ public class CVForge {
 	
     public static final String VERSION = "CVForge v0.2 (beta)";
     public static final String CONFIGFILE = "cvforge.config";              // location of config file
+    
     public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;
 	public static final String BITS = System.getProperty("sun.arch.data.model");		
-	
-	public static CVForgeClassLoader FORGELOADER;
-
+	public static final String OS = System.getProperty("os.name");
 	
 	//protected Point defaultFramePos = new Point(0, 0);
 	//protected Point defaultFrameSize = new Point(0,0);
@@ -39,8 +38,8 @@ public class CVForge {
     protected HashMap<String, Method> methodCache;                          // mapping of strings to methods
     protected HashMap<String, String> config;                               // config map
 
-    //protected ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
-    protected CVForgeClassLoader forgeLoader;
+    //protected ClassLoader forgeLoader = ClassLoader.getSystemClassLoader();
+    protected CVForgeClassLoader forgeLoader = new CVForgeClassLoader();
     
     /**
      * Call initialization.
@@ -54,8 +53,6 @@ public class CVForge {
      */
     public void init(){
         loadConfig(CONFIGFILE);
-        forgeLoader = new CVForgeClassLoader();
-        //hijackIJClassLoader();
         
         libsAvailable = new ArrayList<String>();
         String[] foundJars = CVInstaller.getInstalledOpenCV();
@@ -88,6 +85,7 @@ public class CVForge {
     }
     
     /**
+     * TODO remove
      * Exchange ImageJ ClassLoader by custom CVForgeClassLoader
      */
     public void hijackIJClassLoader(){
@@ -116,27 +114,40 @@ public class CVForge {
      * @param version Library version/ path to load.
      */
     public void loadOpenCV(String version) throws Exception{ 
-    	//System.setProperty("plugin.dir", version);
+    	String nativePath, jarPath, libName;
+    	String bits = (BITS.equals("64"))? "64": "86"; 
+    	
+    	boolean isWin = OS.contains("Windows");
+    	boolean isLinux = OS.contains("Linux");
+    	boolean isMac = OS.contains("Mac");
+    	
+    	if(isWin){
+    		nativePath = PLUGINDIR + "x" + bits + SEP;
+    		jarPath = PLUGINDIR;
+    		libName = new File(version).getName().replace("opencv-", "opencv_java").replace(".jar", ".dll");
+    	}else if(isLinux || isMac){
+    		nativePath = "/usr/lib/jni/";
+    		jarPath = "/usr/share/OpenCV/java/";
+    		libName = new File(version).getName().replace("opencv-", "libopencv_java").replace(".jar", ".so");
+    	}else{
+    		IJ.showMessage("Operating system not recogized.\nUnable to load native libraries.");
+    		return;
+    	}
+    	
     	classCache = new HashMap<String, Class>();
         methodCache = new HashMap<String, Method>();        
-    	if((version != null)/* && libsAvailable.contains(version)*/){
-    		String bits = (BITS.equals("64"))? "64": "86"; 
-    		String dllName = new File(version).getName().replace("opencv-", "opencv_java").replace(".jar", ".dll");
-    		System.load(PLUGINDIR + "x" + bits + SEP + dllName);
-        	libPath = PLUGINDIR + version;
+    	if((version != null)/* && libsAvailable.contains(version)*/){    		
+        	libPath = jarPath + version;
             config.put("libPath", version);
             methodCache = JarInspector.generateMethodCache(libPath, forgeLoader);
             classCache = JarInspector.generateConstructableClassCache(libPath, forgeLoader);
         
             List<Class> classes = JarInspector.loadClassesFromJar(libPath, forgeLoader);
-        	for(Class c: classes){
-        		IJ.register(c);
-        	}
     	}
     	
     	generateLibraryTree();
     	if(!methodCache.isEmpty()){
-    		Executer.initCVForgeExecuter(libPath, forgeLoader);
+    		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
     	}
     }
 
@@ -210,22 +221,34 @@ public class CVForge {
     }
 
     /**
-     * Mapping of mapping name to method.
+     * Mapping of method name to method.
      * @return Generated cache of methods, granted a library has been loaded.
      */
     public HashMap<String, Method> getMethodCache(){
         return methodCache;
     }
     
+    /**
+     * Mapping of class name to class.
+     * @return Generated cache of methods, granted a library has been loaded.
+     */
     public HashMap<String, Class> getClassCache(){
     	return classCache;
     }
 
+    /**
+     * Enable to show error log popups in ImageJ.
+     * @param v Set to true, if logs should be shown.
+     */
     public void setVerbose(boolean v){
     	config.put("verbose", Boolean.toString(v));
     	verbose = v;
     }
     
+    /**
+     * Show if verbose error logs are enabled.
+     * @return True, if verbose messages enabled.
+     */
     public boolean isVerbose(){
     	return verbose;
     }

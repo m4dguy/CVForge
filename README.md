@@ -7,11 +7,6 @@ Be aware that this software is in early beta stage. What you have here is work-i
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
 A report should contain error messages, a list of steps leading to the bug and the image you used. 
 
-Soon to be fixed bugs and limitations:
-Windows-only support. 
-Only works with Fiji, not with ImageJ.
-
-
 
 CVForge aims to close the gap between the popular tool ImageJ and the powerful OpenCV library.
 This plugin gives access to all methods of OpenCV, independent from it's version.
@@ -48,14 +43,15 @@ Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.
 CVForge itself uses converters and gives you access to them through the CVForgeConverion jar for your own scripts.
 
-Flexible support:
-No matter if x86 or x64, CVForge runs on both architectures and dynamically switches to the one you currently use.
-
+Flexible and portable support:
+No matter if Windows, Linux or Mac, CVForge runs on all major operating systems with only slight differences and full functionality.
+Independent of x86 or x64 architectures, CVForge will dynamically switch to the one you currently use.
 
 Installation:
 * Copy "CVForge_[version number].jar", "CVForgeConversion.jar" and "ReflectionTools.jar" into the ImageJ plugin folder.
+* To use OpenCV functions, you need to install an OpenCV jar (see the following sections).
 
-Automatic OpenCV jar installation:
+Automatic OpenCV jar installation (Windows):
 * Launch CVForge from inside of ImageJ
 * In CVForge, click "Plugin" > "Install"
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
@@ -64,8 +60,12 @@ Automatic OpenCV jar installation:
 * CVForge will copy the necessary files into the plugin folder of ImageJ
 * Restart ImageJ
 
-Manual OpenCV jar installation:
+Manual OpenCV jar installation (Windows):
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
 * Go to "build" > "java"
 * Copy-paste the content of this folder (subfolers included!) into ImageJ's plugin folder
 * CVForge will detect and list the installed jar
+
+OpenCV installation (Linux/ Mac):
+* Download and build OpenCV on your system
+* Once an OpenCV version with java is installed, CVForge will find and detect the jar in your system

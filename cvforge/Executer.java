@@ -15,6 +15,8 @@ import reflectiontools.JarInspector;
 // handle with care!
 public final class Executer {
 	
+	// TODO load opencv dll in this class?
+	
 	protected static final String SEP = CVForge.SEP;
 	protected static final Class[] SIG = {Method.class, Object[].class, String.class};
 	
@@ -76,12 +78,12 @@ public final class Executer {
 	}*/
 	
 	/**
-	 * Load OpenCV methods 
-	 * Load CVForgeExecuter and execute method.
+	 * Load OpenCV methods and native library.
+	 * Load CVForgeExecuter and its methods.
 	 * @param cvPath
 	 * @throws Exception
 	 */
-	public static void initCVForgeExecuter(String cvPath, CVForgeClassLoader loader) throws Exception{
+	public static void initCVForgeExecuter(String cvPath, String dllPath, CVForgeClassLoader loader) throws Exception{		
 		final String path = CVForge.PLUGINDIR + CONVERTERJAR;
 		loader.addURL(path);
 		List<Class> classes = JarInspector.loadClassesFromJar(path, loader);
@@ -94,8 +96,12 @@ public final class Executer {
 		
 		if(executer == null)
 			throw new ClassNotFoundException("No Execution/Conversion module found.");
-			
-		IJ.register(executer);
+		
+		// load dll
+		Method init = executer.getMethod("loadDll", String.class);
+		init.setAccessible(true);
+		init.invoke(null, dllPath);	
+		
 		execute = executer.getMethod("execute", SIG);
 		execute.setAccessible(true);
 	}

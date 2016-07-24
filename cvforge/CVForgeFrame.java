@@ -197,12 +197,15 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         Menu menuPlugin = new Menu("Plugin");
         menuBar.add(menuPlugin);
         
-        MenuItem itemInstallation = new MenuItem("Install");
-        itemInstallation.setShortcut(new MenuShortcut('I'));
-        itemInstallation.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent e) {installJar();}
-        });  
-        menuPlugin.add(itemInstallation);
+        // jar installation only possible in Windows (Linux version relies on system libs)
+        if(CVForge.OS.contains("Windows")){
+	        MenuItem itemInstallation = new MenuItem("Install");
+	        itemInstallation.setShortcut(new MenuShortcut('I'));
+	        itemInstallation.addActionListener(new ActionListener(){
+	        	public void actionPerformed(ActionEvent e) {installJar();}
+	        });  
+	        menuPlugin.add(itemInstallation);
+        }
                 
         ArrayList<String> installed = forge.availableLibs();
         
@@ -309,9 +312,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     public static void showAbout(){
     	IJ.showMessage(
 			CVForge.VERSION + " is powered by OpenCV." + System.lineSeparator() +
-			"For detailed information, please refer to" + System.lineSeparator() +
-			"http://opencv.org/documentation.html" + System.lineSeparator() +
-			 System.lineSeparator() +
+			"For detailed information, please refer to" + "http://opencv.org/documentation.html" + System.lineSeparator() +
 			"For support and suggestions, contact send a mail to janmartens@live.de."  + System.lineSeparator() +
 			"For bug reports, state each single step and send in the used picture."
 		);

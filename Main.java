@@ -23,13 +23,13 @@ public class Main{
 		// start ImageJ
 		new ImageJ();		
 		
+		// open the Clown sample
+		//ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
 		
-		ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
-		
-		//String filename = "hund_color.jpg";
+		String filename = "hund_color.jpg";
 		//String filename = "hund.jpg";
-		//String path = System.getProperty("user.dir") + "\\" + filename;
-		//ImagePlus image = IJ.openImage(path);
+		String path = System.getProperty("user.dir") + "\\" + filename;
+		ImagePlus image = IJ.openImage(path);
 		image.show();
 		
 		ImageProcessor ip = image.getProcessor(); 

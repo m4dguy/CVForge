@@ -12,6 +12,12 @@ import java.lang.reflect.Method;
 
 public final class CVForgeExecuter {
 	
+	
+	// load opencv dll in this class!
+	public static void loadDll(String path){
+		System.load(path);
+	}
+	
 	/**
 	 * Call this method by reflection.
 	 * @param m Method to be called.

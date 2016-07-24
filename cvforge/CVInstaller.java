@@ -29,6 +29,7 @@ public class CVInstaller {
 		// TODO hook Executer classloader in here!
 		URLClassLoader loader = (URLClassLoader)IJ.getClassLoader();
 		
+		
 		/*if(IJ.getClassLoader() instanceof URLClassLoader){
 			IJ.showMessage("loader is urlloader");
 		}else{

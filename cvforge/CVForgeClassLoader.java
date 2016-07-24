@@ -3,7 +3,9 @@ package cvforge;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Vector;
 
+import ij.IJ;
 import ij.io.PluginClassLoader;
 
 /**
@@ -28,6 +30,10 @@ public class CVForgeClassLoader extends PluginClassLoader{
 	 */
 	CVForgeClassLoader(String path){
 		super(path);
+	}
+	
+	public void loadNativeLib(String path){		
+		System.load(path);
 	}
 	
 	/**
