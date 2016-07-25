@@ -47,6 +47,10 @@ Flexible and portable support:
 No matter if Windows, Linux or Mac, CVForge runs on all major operating systems with only slight differences and full functionality.
 Independent of x86 or x64 architectures, CVForge will dynamically switch to the one you currently use.
 
+
+
+## Installation
+
 Installation:
 * Copy "CVForge_[version number].jar", "CVForgeConversion.jar" and "ReflectionTools.jar" into the ImageJ plugin folder.
 * To use OpenCV functions, you need to install an OpenCV jar (see the following sections).
@@ -58,7 +62,7 @@ Automatic OpenCV jar installation (Windows):
 * Go to "build" > "java"
 * Select and open the file "opencv-[version number].jar"
 * CVForge will copy the necessary files into the plugin folder of ImageJ
-* Restart ImageJ
+* Fiji users must restart the application.
 
 Manual OpenCV jar installation (Windows):
 * Navigate to the OpenCV folder you downloaded from the OpenCV website

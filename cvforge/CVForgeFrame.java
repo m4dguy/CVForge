@@ -83,8 +83,12 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         CVForgeCache.addListener(callFrame);
         CVForgeCache.addListener(conFrame);
         String lib = forge.activeLib();
+        
         switchJar(lib);
         setupMenubar();
+        
+        this.setLocation(forge.restoreWindowPosition());
+        this.setSize(forge.restoreWindowSize());
         
         setResizable(true);
         setVisible(true);  
@@ -111,6 +115,9 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      * Initialize tree properties and add listener.
      */
     public void setupTreeListener(){
+    	if(libTree == null)
+    		return;
+    	
         libTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         libTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -135,7 +142,8 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void pluginShutdown(){
         IJ.showStatus("shutting down CVForge");
-    	forge.saveSettings();
+    	forge.storeWindowDimensions(this.getLocation(), this.getSize());
+        forge.saveSettings();
         callFrame.dispose();
         cacheFrame.dispose();
         conFrame.dispose();
@@ -166,7 +174,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void switchJar(String path){
     	IJ.showStatus("loading opencv library: " + path);
-    	
+
     	try{
 	    	forge.loadOpenCV(path);
 	    	methodCache = forge.getMethodCache();

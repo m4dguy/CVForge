@@ -7,6 +7,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import ij.IJ;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.io.CharArrayWriter;
 //import java.awt.Point;
 import java.io.File;
@@ -19,7 +21,7 @@ public class CVForge {
 	
 	public static final String SEP = System.getProperty("file.separator");
 	
-    public static final String VERSION = "CVForge v0.2 (beta)";
+    public static final String VERSION = "CVForge v0.3 (beta)";
     public static final String CONFIGFILE = "cvforge.config";              // location of config file
     
     public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;
@@ -116,39 +118,41 @@ public class CVForge {
     public void loadOpenCV(String version) throws Exception{ 
     	String nativePath, jarPath, libName;
     	String bits = (BITS.equals("64"))? "64": "86"; 
+
+    	classCache = new HashMap<String, Class>();
+        methodCache = new HashMap<String, Method>();  
     	
     	boolean isWin = OS.contains("Windows");
     	boolean isLinux = OS.contains("Linux");
     	boolean isMac = OS.contains("Mac");
     	
-    	if(isWin){
-    		nativePath = PLUGINDIR + "x" + bits + SEP;
-    		jarPath = PLUGINDIR;
-    		libName = new File(version).getName().replace("opencv-", "opencv_java").replace(".jar", ".dll");
-    	}else if(isLinux || isMac){
-    		nativePath = "/usr/lib/jni/";
-    		jarPath = "/usr/share/OpenCV/java/";
-    		libName = new File(version).getName().replace("opencv-", "libopencv_java").replace(".jar", ".so");
-    	}else{
-    		IJ.showMessage("Operating system not recogized.\nUnable to load native libraries.");
-    		return;
-    	}
-    	
-    	classCache = new HashMap<String, Class>();
-        methodCache = new HashMap<String, Method>();        
-    	if((version != null)/* && libsAvailable.contains(version)*/){    		
-        	libPath = jarPath + version;
-            config.put("libPath", version);
-            methodCache = JarInspector.generateMethodCache(libPath, forgeLoader);
-            classCache = JarInspector.generateConstructableClassCache(libPath, forgeLoader);
-        
-            List<Class> classes = JarInspector.loadClassesFromJar(libPath, forgeLoader);
-    	}
-    	
+    	try{
+	    	if(isWin){
+	    		nativePath = PLUGINDIR + "x" + bits + SEP;
+	    		jarPath = PLUGINDIR;
+	    		libName = new File(version).getName().replace("opencv-", "opencv_java").replace(".jar", ".dll");
+	    	}else if(isLinux || isMac){
+	    		nativePath = "/usr/lib/jni/";
+	    		jarPath = "/usr/share/OpenCV/java/";
+	    		libName = new File(version).getName().replace("opencv-", "libopencv_java").replace(".jar", ".so");
+	    	}else{
+	    		IJ.showMessage("Operating system not recogized.\nUnable to load native libraries.");
+	    		return;
+	    	}
+	    	
+	    	if((version != null)/* && libsAvailable.contains(version)*/){    		
+	        	libPath = jarPath + version;
+	            config.put("libPath", version);
+	            methodCache = JarInspector.generateMethodCache(libPath, forgeLoader);
+	            classCache = JarInspector.generateConstructableClassCache(libPath, forgeLoader);
+	        
+	            List<Class> classes = JarInspector.loadClassesFromJar(libPath, forgeLoader);
+	            if(!methodCache.isEmpty()){
+	        		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
+	        	}
+	    	}
+    	}catch(Exception e){}
     	generateLibraryTree();
-    	if(!methodCache.isEmpty()){
-    		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
-    	}
     }
 
     /**
@@ -192,7 +196,7 @@ public class CVForge {
      * Dump config map in file defined by CONFIGPATH.
      */
     public void saveSettings(){
-        ConfigIO.writeConfig(config, CONFIGFILE);
+    	ConfigIO.writeConfig(config, CONFIGFILE);
     }
 
     /**
@@ -251,5 +255,32 @@ public class CVForge {
      */
     public boolean isVerbose(){
     	return verbose;
+    }
+    
+    public Point restoreWindowPosition(){
+    	String x = config.get("winX");
+    	String y = config.get("winY");
+    	
+    	if((x != null) && (y != null))
+    		return new Point(Integer.parseInt(x), Integer.parseInt(y));
+    	else
+    		return new Point(0, 0);
+    }
+    
+    public Dimension restoreWindowSize(){
+    	String width = config.get("winWidth");
+    	String height = config.get("winHeight");
+    	
+    	if((width != null) && (height != null))
+    		return new Dimension(Integer.parseInt(width), Integer.parseInt(height));
+    	else
+    		return new Dimension(0, 0);
+    }
+    
+    public void storeWindowDimensions(Point pos, Dimension size){
+    	config.put("winX", ""+pos.x);
+    	config.put("winY", ""+pos.y);
+    	config.put("winWidth", ""+(int)size.getWidth());
+    	config.put("winHeight", ""+(int)size.getHeight());
     }
 }
