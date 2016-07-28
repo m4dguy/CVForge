@@ -83,12 +83,8 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         CVForgeCache.addListener(callFrame);
         CVForgeCache.addListener(conFrame);
         String lib = forge.activeLib();
-        
         switchJar(lib);
         setupMenubar();
-        
-        this.setLocation(forge.restoreWindowPosition());
-        this.setSize(forge.restoreWindowSize());
         
         setResizable(true);
         setVisible(true);  
@@ -115,9 +111,6 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      * Initialize tree properties and add listener.
      */
     public void setupTreeListener(){
-    	if(libTree == null)
-    		return;
-    	
         libTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         libTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -142,8 +135,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void pluginShutdown(){
         IJ.showStatus("shutting down CVForge");
-    	forge.storeWindowDimensions(this.getLocation(), this.getSize());
-        forge.saveSettings();
+    	forge.saveSettings();
         callFrame.dispose();
         cacheFrame.dispose();
         conFrame.dispose();
@@ -174,7 +166,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void switchJar(String path){
     	IJ.showStatus("loading opencv library: " + path);
-
+    	
     	try{
 	    	forge.loadOpenCV(path);
 	    	methodCache = forge.getMethodCache();
@@ -205,15 +197,12 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         Menu menuPlugin = new Menu("Plugin");
         menuBar.add(menuPlugin);
         
-        // jar installation only possible in Windows (Linux version relies on system libs)
-        if(CVForge.OS.contains("Windows")){
-	        MenuItem itemInstallation = new MenuItem("Install");
-	        itemInstallation.setShortcut(new MenuShortcut('I'));
-	        itemInstallation.addActionListener(new ActionListener(){
-	        	public void actionPerformed(ActionEvent e) {installJar();}
-	        });  
-	        menuPlugin.add(itemInstallation);
-        }
+        MenuItem itemInstallation = new MenuItem("Install");
+        itemInstallation.setShortcut(new MenuShortcut('I'));
+        itemInstallation.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {installJar();}
+        });  
+        menuPlugin.add(itemInstallation);
                 
         ArrayList<String> installed = forge.availableLibs();
         
@@ -320,7 +309,9 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     public static void showAbout(){
     	IJ.showMessage(
 			CVForge.VERSION + " is powered by OpenCV." + System.lineSeparator() +
-			"For detailed information, please refer to" + "http://opencv.org/documentation.html" + System.lineSeparator() +
+			"For detailed information, please refer to" + System.lineSeparator() +
+			"http://opencv.org/documentation.html" + System.lineSeparator() +
+			 System.lineSeparator() +
 			"For support and suggestions, contact send a mail to janmartens@live.de."  + System.lineSeparator() +
 			"For bug reports, state each single step and send in the used picture."
 		);

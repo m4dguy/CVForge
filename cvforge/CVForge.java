@@ -87,19 +87,6 @@ public class CVForge {
     }
     
     /**
-     * TODO remove
-     * Exchange ImageJ ClassLoader by custom CVForgeClassLoader
-     */
-    public void hijackIJClassLoader(){
-		Class ijclass = IJ.class;
-		try{
-			Method loaderSetter = ijclass.getDeclaredMethod("setClassLoader", new Class[]{ClassLoader.class});
-			loaderSetter.setAccessible(true);
-			loaderSetter.invoke(null, forgeLoader);
-		}catch(Exception e){IJ.showMessage("hijack failed");};
-    }
-
-    /**
      * Return the internal ClassLoader.
      * Use with caution, as modifications can potentially break IJ. 
      * @return Internal ClassLoader.
@@ -126,7 +113,7 @@ public class CVForge {
     	boolean isLinux = OS.contains("Linux");
     	boolean isMac = OS.contains("Mac");
     	
-    	try{
+    	
 	    	if(isWin){
 	    		nativePath = PLUGINDIR + "x" + bits + SEP;
 	    		jarPath = PLUGINDIR;
@@ -136,13 +123,15 @@ public class CVForge {
 	    		jarPath = "/usr/share/OpenCV/java/";
 	    		libName = new File(version).getName().replace("opencv-", "libopencv_java").replace(".jar", ".so");
 	    	}else{
-	    		IJ.showMessage("Operating system not recogized.\nUnable to load native libraries.");
+	    		IJ.showMessage("Operating system not recognized.\nUnable to load native libraries.");
 	    		return;
 	    	}
 	    	
 	    	if((version != null)/* && libsAvailable.contains(version)*/){    		
 	        	libPath = jarPath + version;
 	            config.put("libPath", version);
+	            
+	            forgeLoader.addURL(libPath);
 	            methodCache = JarInspector.generateMethodCache(libPath, forgeLoader);
 	            classCache = JarInspector.generateConstructableClassCache(libPath, forgeLoader);
 	        
@@ -151,7 +140,7 @@ public class CVForge {
 	        		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
 	        	}
 	    	}
-    	}catch(Exception e){}
+    	
     	generateLibraryTree();
     }
 
@@ -188,7 +177,7 @@ public class CVForge {
 	        if(!libsAvailable.contains(relPath))
 	        	libsAvailable.add(relPath);
         }else{
-        	System.out.println("installation of jar failed: " + path);
+        	IJ.showMessage("installation of jar failed: " + path);
         }
     }
 
@@ -257,6 +246,10 @@ public class CVForge {
     	return verbose;
     }
     
+    /**
+     * Gets Frame position from config file.
+     * @return Stored Frame position from earlier session.
+     */
     public Point restoreWindowPosition(){
     	String x = config.get("winX");
     	String y = config.get("winY");
@@ -267,6 +260,10 @@ public class CVForge {
     		return new Point(0, 0);
     }
     
+    /**
+     * Gets Frame size from config file.
+     * @return Stored Frame size from earlier session.
+     */
     public Dimension restoreWindowSize(){
     	String width = config.get("winWidth");
     	String height = config.get("winHeight");
@@ -277,10 +274,15 @@ public class CVForge {
     		return new Dimension(0, 0);
     }
     
+    /**
+     * Save position and size of frame in config file.
+     * @param pos Frame position to be stored.
+     * @param size Frame size to be stored.
+     */
     public void storeWindowDimensions(Point pos, Dimension size){
     	config.put("winX", ""+pos.x);
     	config.put("winY", ""+pos.y);
-    	config.put("winWidth", ""+(int)size.getWidth());
-    	config.put("winHeight", ""+(int)size.getHeight());
+    	config.put("winWidth", ""+size.width);
+    	config.put("winHeight", ""+size.height);
     }
 }

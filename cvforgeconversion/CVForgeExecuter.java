@@ -1,5 +1,6 @@
 package cvforgeconversion;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 

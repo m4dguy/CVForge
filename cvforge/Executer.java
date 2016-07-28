@@ -15,8 +15,6 @@ import reflectiontools.JarInspector;
 // handle with care!
 public final class Executer {
 	
-	// TODO load opencv dll in this class?
-	
 	protected static final String SEP = CVForge.SEP;
 	protected static final Class[] SIG = {Method.class, Object[].class, String.class};
 	
@@ -29,53 +27,6 @@ public final class Executer {
 	protected static final String EXECUTERNAME = "CVForgeExecuter";
 	protected static final String CONVERTERJAR = "CVForgeConversion.jar";
 	
-	/*public static URLClassLoader getClassLoader(){
-		if(classLoader == null){
-			classLoader = URLClassLoader.newInstance(new URL[]{new File(path).toURI().toURL()}); 
-		}
-		return classLoader;
-	}*/
-	
-	/**
-	 * Add path to internal classloader.
-	 * @param path Path of class to add.
-	 * @throws Exception Thrown, if loading and adding the class fails.
-	 */
-	/*protected static void addToClassLoader(String path) throws Exception{				
-		if(classLoader == null){
-			//ClassLoader parentLoader = IJ.getClassLoader();
-			ClassLoader parentLoader = ClassLoader.getSystemClassLoader();
-			classLoader = URLClassLoader.newInstance(new URL[]{new File(path).toURI().toURL()}, parentLoader);
-			//classLoader = URLClassLoader.newInstance(new URL[]{new File(path).toURI().toURL()});
-
-			Class ijclass = IJ.class;
-			Method loaderSetter = ijclass.getDeclaredMethod("setClassLoader", new Class[]{ClassLoader.class});
-			loaderSetter.setAccessible(true);
-			
-			//IJ.showMessage("loaderSetter" + loaderSetter.toString());
-			loaderSetter.invoke(null, classLoader);
-			
-			JarFile jar = new JarFile(path);
-	        List<JarEntry> entries = JarInspector.getJarEntries(jar, false);
-	        List<String> classEntries = new ArrayList<String>();
-	        for(JarEntry j: entries){
-	            if(j.getName().endsWith("class")) {
-	                String name = j.getName();
-	                name = name.substring(0, name.length()-6);
-	                classEntries.add(name.replace("/","."));
-	            }
-	        }
-	        for(String name: classEntries){
-	        	Class.forName(name, true, classLoader);
-	        }
-
-		}else{
-			Class loaderClass = URLClassLoader.class;
-			Method addMethod = loaderClass.getDeclaredMethod("addURL", new Class[] { URL.class });
-			addMethod.setAccessible(true);
-			addMethod.invoke(classLoader, new Object[] { new URL(path) });
-		}
-	}*/
 	
 	/**
 	 * Load OpenCV methods and native library.
@@ -97,11 +48,10 @@ public final class Executer {
 		if(executer == null)
 			throw new ClassNotFoundException("No Execution/Conversion module found.");
 		
-		// load dll
 		Method init = executer.getMethod("loadDll", String.class);
 		init.setAccessible(true);
-		init.invoke(null, dllPath);	
-		
+		init.invoke(null, dllPath);
+	
 		execute = executer.getMethod("execute", SIG);
 		execute.setAccessible(true);
 	}
