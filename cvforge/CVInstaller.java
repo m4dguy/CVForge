@@ -11,6 +11,8 @@ import ij.io.PluginClassLoader;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import cvforgeconversion.CVForgeExecuter;
+
 import reflectiontools.JarInspector;
 
 /**
@@ -50,7 +52,14 @@ public class CVInstaller {
      * @return Names/ version numbers of installed OpenCV versions.
      */
     public static String[] getInstalledOpenCV(){
-        File pluginDir = new File(CVForge.PLUGINDIR); 
+    	File pluginDir;
+    	if(CVForge.OS.contains("Windows")){
+    		IJ.showMessage(CVForge.getPluginPath());
+    		pluginDir = new File(CVForge.PLUGINDIR);
+    	}else{
+    		pluginDir = new File("/usr/share/OpenCV/java/");
+    	}
+    	
         File[] cvJars = pluginDir.listFiles(new JarInspector.DefaultFilenameFilter("opencv"));
         
         String[] cvPaths = new String[cvJars.length];

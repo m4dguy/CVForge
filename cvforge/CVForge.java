@@ -24,7 +24,9 @@ public class CVForge {
     public static final String VERSION = "CVForge v0.3 (beta)";
     public static final String CONFIGFILE = "cvforge.config";              // location of config file
     
-    public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;
+    //public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;
+    public static final String PLUGINDIR = getPluginPath();
+    
 	public static final String BITS = System.getProperty("sun.arch.data.model");		
 	public static final String OS = System.getProperty("os.name");
 	
@@ -47,7 +49,19 @@ public class CVForge {
      * Call initialization.
      */
     public CVForge(){
-        init();
+    	init();
+    }
+    
+    public static String getPluginPath(){
+    	String dir = System.getProperty("plugins.dir");
+    	dir = dir.replace("/", SEP);
+    	dir = dir.replace("%20", " ");
+    	
+    	//dir += "plugins" + SEP;
+    	//return dir.substring(1,  dir.length());
+    	
+    	dir += SEP + "plugins" + SEP;
+    	return dir;
     }
 
     /**
@@ -113,7 +127,7 @@ public class CVForge {
     	boolean isLinux = OS.contains("Linux");
     	boolean isMac = OS.contains("Mac");
     	
-    	
+    	try{
 	    	if(isWin){
 	    		nativePath = PLUGINDIR + "x" + bits + SEP;
 	    		jarPath = PLUGINDIR;
@@ -140,7 +154,7 @@ public class CVForge {
 	        		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
 	        	}
 	    	}
-    	
+    	}catch(Exception e){}
     	generateLibraryTree();
     }
 

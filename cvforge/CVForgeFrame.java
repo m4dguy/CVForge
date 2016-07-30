@@ -197,13 +197,15 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         Menu menuPlugin = new Menu("Plugin");
         menuBar.add(menuPlugin);
         
-        MenuItem itemInstallation = new MenuItem("Install");
-        itemInstallation.setShortcut(new MenuShortcut('I'));
-        itemInstallation.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent e) {installJar();}
-        });  
-        menuPlugin.add(itemInstallation);
-                
+        if(CVForge.OS.contains("Windows")){
+	        MenuItem itemInstallation = new MenuItem("Install");
+	        itemInstallation.setShortcut(new MenuShortcut('I'));
+	        itemInstallation.addActionListener(new ActionListener(){
+	        	public void actionPerformed(ActionEvent e) {installJar();}
+	        });  
+	        menuPlugin.add(itemInstallation);
+        }
+	        
         ArrayList<String> installed = forge.availableLibs();
         
         Menu subMenuLoad = new Menu("Load");
