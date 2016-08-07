@@ -21,7 +21,7 @@ public class CVForge {
 	
 	public static final String SEP = System.getProperty("file.separator");
 	
-    public static final String VERSION = "CVForge v0.3 (beta)";
+    public static final String VERSION = "CVForge v0.4 (beta)";
     public static final String CONFIGFILE = "cvforge.config";              // location of config file
     
     //public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;

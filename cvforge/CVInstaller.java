@@ -54,7 +54,7 @@ public class CVInstaller {
     public static String[] getInstalledOpenCV(){
     	File pluginDir;
     	if(CVForge.OS.contains("Windows")){
-    		IJ.showMessage(CVForge.getPluginPath());
+    		//IJ.showMessage(CVForge.getPluginPath());
     		pluginDir = new File(CVForge.PLUGINDIR);
     	}else{
     		pluginDir = new File("/usr/share/OpenCV/java/");

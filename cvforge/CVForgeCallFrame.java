@@ -2,6 +2,8 @@ package cvforge;
 
 import javax.swing.*;
 
+import ij.WindowManager;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -84,7 +86,26 @@ public class CVForgeCallFrame extends JDialog implements CacheListener{
 	    }	    
 	    this.pack();
     }
-
+    
+    /**
+     * Creates an argument String for macro recording.
+     * @return String with macro arguments.
+     */
+    public String getMethodArgs(){
+    	String args = "method=" + this.getActiveMethod().getName();
+    	for(int i=0; i<components.size(); ++i){
+        	JComponent comp = components.get(i);
+        	String arg = InputHelpers.getText(comp);
+        	String currentName = WindowManager.getCurrentWindow().getTitle();
+        	
+        	if(arg.equals(currentName)){
+        		arg = "[currentWindow]";
+        	}
+			args += " arg" + i + "=" + arg;
+    	}
+    	return args;
+    }
+    
     /**
      * Get parameters from JComponents.
      * @return Array of objects (Integer, Double, String, ...) which are suitable parameters.

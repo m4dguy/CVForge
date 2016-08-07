@@ -1,4 +1,4 @@
-## CVForge 0.2.0 beta
+## CVForge 0.4.0 beta
 Watch the demo video on youtube:
 * https://youtu.be/irnBuvW2dEo
 
@@ -39,13 +39,16 @@ Download the latest OpenCV version or use an earlier one.
 You are free to load and use your own build of the OpenCV library.
 No matter your preference, you can switch between different versions on-the-fly and choose the one which suits you best.
 
+* Macro support:
+Enhance your productivity by recording your actions and running them as ImageJ macros.
+
 * Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.
-CVForge itself uses converters and gives you access to them through the CVForgeConverion jar for your own scripts.
+CVForge itself uses converters and gives you access to them through the separate CVForgeConverion jar for your own scripts.
 
 * Flexible and portable support:
 No matter if Windows, Linux or Mac, CVForge runs on all major operating systems with only slight differences and full functionality.
-Independent of x86 or x64 architectures, CVForge will dynamically switch to the one you currently use.
+Independent of x86 or x64 architectures, CVForge will dynamically switch to the one currently used.
 
 
 
@@ -59,7 +62,7 @@ Automatic OpenCV jar installation (Windows):
 * Launch CVForge from inside of ImageJ
 * In CVForge, click "Plugin" > "Install"
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
-* Go to "build" > "java"
+* Navigate to the "build" > "java" directory
 * Select and open the file "opencv-[version number].jar"
 * CVForge will copy the necessary files into the plugin folder of ImageJ
 * Fiji users must restart the application.
@@ -72,4 +75,4 @@ Manual OpenCV jar installation (Windows):
 
 OpenCV installation (Linux/ Mac):
 * Download and build OpenCV on your system
-* Once an OpenCV version with java is installed, CVForge will find and detect the jar in your system
+* Once an OpenCV version with java a module is installed, CVForge will find and detect the jar in your system

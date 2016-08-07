@@ -13,8 +13,10 @@ import java.lang.reflect.Method;
 
 public final class CVForgeExecuter {
 	
-	
-	// load opencv dll in this class!
+	/**
+	 * Must be called to load the OpenCV native library from current ClassLoader context.
+	 * @param path Path to native library.
+	 */
 	public static void loadDll(String path){
 		System.load(path);
 	}

@@ -27,20 +27,20 @@ import ij.*;
  */
 public class CVForgeFrame extends PlugInFrame implements ActionListener {
 	
-    CVForge forge;
-    // TODO substitute with ij.GenericDialog
-    CVForgeCallFrame callFrame;
-    CVForgeCacheFrame cacheFrame;
-    CVForgeConstructorFrame conFrame;
+    public static CVForge FORGE;
+
+    protected CVForgeCallFrame callFrame;
+    protected CVForgeCacheFrame cacheFrame;
+    protected CVForgeConstructorFrame conFrame;
     
-    JTree libTree;
-    HashMap<String, Method> methodCache;
-    JScrollPane libTreePane;
-    MenuBar menuBar;
+    protected JTree libTree;
+    protected HashMap<String, Method> methodCache;
+    protected JScrollPane libTreePane;
+    protected MenuBar menuBar;
     
     // input field for tree filtering
-    JTextField textFieldFilter;
-    JButton buttonFilter;
+    protected JTextField textFieldFilter;
+    protected JButton buttonFilter;
     
     public CVForgeFrame(){
         // window setup
@@ -73,7 +73,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         add(filterPanel, BorderLayout.SOUTH);
         
         IJ.showStatus("initializing CVForge...");
-        forge = new CVForge();
+        FORGE = new CVForge();
         callFrame = new CVForgeCallFrame();
         callFrame.addExternalButtonListener(this);
         conFrame = new CVForgeConstructorFrame();
@@ -82,19 +82,19 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         CVForgeCache.addListener(cacheFrame);
         CVForgeCache.addListener(callFrame);
         CVForgeCache.addListener(conFrame);
-        String lib = forge.activeLib();
+        String lib = FORGE.activeLib();
         switchJar(lib);
         setupMenubar();
         
         setResizable(true);
-        setVisible(true);  
+        //setVisible(true);  
     }
-    
+
     /**
      * If there active lib found, load the tree and set up user interface.
      */
     public void loadLibraryTree(){
-        libTree = forge.getLibraryTree();
+        libTree = FORGE.getLibraryTree();
         
         // keep GUI clean 
         if(libTreePane != null)
@@ -135,7 +135,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void pluginShutdown(){
         IJ.showStatus("shutting down CVForge");
-    	forge.saveSettings();
+        FORGE.saveSettings();
         callFrame.dispose();
         cacheFrame.dispose();
         conFrame.dispose();
@@ -153,7 +153,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         if (returnVal == JFileChooser.APPROVE_OPTION){
         	String path = chooser.getSelectedFile().getPath();
         	String name = chooser.getSelectedFile().getName();
-        	forge.installOpenCV(path);
+        	FORGE.installOpenCV(path);
         	switchJar(name);
         	setupMenubar();
         }
@@ -168,15 +168,15 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     	IJ.showStatus("loading opencv library: " + path);
     	
     	try{
-	    	forge.loadOpenCV(path);
-	    	methodCache = forge.getMethodCache();
+    		FORGE.loadOpenCV(path);
+	    	methodCache = FORGE.getMethodCache();
 	    	loadLibraryTree();
-	    	conFrame.setClassCache(forge.getClassCache());
+	    	conFrame.setClassCache(FORGE.getClassCache());
 	    	IJ.showStatus("library loaded: " + path);
     	}catch(Exception e) {
 			IJ.beep();
 			IJ.showStatus(e.toString());
-			if(forge.isVerbose()){
+			if(FORGE.isVerbose()){
 				CharArrayWriter caw = new CharArrayWriter();
 				PrintWriter pw = new PrintWriter(caw);
 				e.printStackTrace(pw);
@@ -206,7 +206,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 	        menuPlugin.add(itemInstallation);
         }
 	        
-        ArrayList<String> installed = forge.availableLibs();
+        ArrayList<String> installed = FORGE.availableLibs();
         
         Menu subMenuLoad = new Menu("Load");
         subMenuLoad.setEnabled(installed.size()!=0);
@@ -245,7 +245,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         itemConstructor.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {conFrame.setVisible(!conFrame.isVisible());}
         });
-    	itemConstructor.setEnabled(forge.activeLib()!=null);
+    	itemConstructor.setEnabled(FORGE.activeLib()!=null);
     	menuTools.add(itemConstructor);		
         
     	menuTools.addSeparator();
@@ -253,7 +253,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         MenuItem itemVerbose = new MenuItem("Toggle verbose errors");
         itemVerbose.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
-        		forge.setVerbose(!forge.isVerbose());
+        		FORGE.setVerbose(!FORGE.isVerbose());
         	}
         });
         menuTools.add(itemVerbose);
@@ -322,7 +322,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     /**
      * Lock all images for filtering.
      */
-    public void lockAllImages(){
+    public static void lockAllImages(){
     	for(String title: WindowManager.getImageTitles()){
 			ImagePlus imp = WindowManager.getImage(title);
 			imp.lock();	
@@ -332,7 +332,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     /**
      * Unlock and update all images.
      */
-    public void unlockAllImages(){
+    public static void unlockAllImages(){
     	for(String title: WindowManager.getImageTitles()){
 			ImagePlus imp = WindowManager.getImage(title);
 			imp.updateAndDraw();
@@ -369,6 +369,11 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 			lockAllImages();
 			
 			try {
+				if(Recorder.record){
+					String methodArgs = callFrame.getMethodArgs();
+					Recorder.record("run", "CVForge", methodArgs);		
+				}
+					
 				Executer.executeMethod(callFrame.getActiveMethod(), callFrame.extractParameters(), callFrame.getReturnName());
 				IJ.showStatus((System.currentTimeMillis()-startTime)+" milliseconds");
 			} catch(OutOfMemoryError e) {
@@ -377,7 +382,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 				IJ.beep();
 				IJ.showStatus(e.toString());
 				e.printStackTrace();
-				if(forge.isVerbose()){
+				if(FORGE.isVerbose()){
 					CharArrayWriter caw = new CharArrayWriter();
 					PrintWriter pw = new PrintWriter(caw);
 					e.printStackTrace(pw);
@@ -388,5 +393,4 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
     }
-
 }
