@@ -5,17 +5,12 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import ij.IJ;
-import ij.ImagePlus;
 import ij.Macro;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-import ij.plugin.filter.PlugInFilter;
-import ij.plugin.frame.Recorder;
-import ij.process.ImageProcessor;
 
 public class CVForgeLauncher implements PlugIn{
 	
@@ -35,7 +30,6 @@ public class CVForgeLauncher implements PlugIn{
 		// launch forge
 		if(CVFORGEFRAME == null){
 			CVFORGEFRAME = (CVForgeFrame)IJ.runPlugIn(CVForgeFrame.class.getName(), "");
-			CVFORGEFRAME.setVisible(false);
 		}
 		
 		// extract arguments
@@ -89,7 +83,7 @@ public class CVForgeLauncher implements PlugIn{
 		Set<String> keySet = methodCache.keySet();
 		
 		// find methods with matching names
-		ArrayList<Method> matches = new ArrayList();
+		ArrayList<Method> matches = new ArrayList<Method>();
 		for(String key: keySet){
 			if(key.contains(methodName)){
 				matches.add(methodCache.get(key));

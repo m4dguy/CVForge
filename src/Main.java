@@ -11,30 +11,10 @@ import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
 /**
- *
+ * Launcher for running/ testing in IDE.
  */
 public class Main{
 	public static void main(String[] args){
-		/*Class<?> clazz = CVForgeFrame.class;
-		String url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class").toString();
-		String pluginsDir = url.substring(5, url.length() - clazz.getName().length() - 6);
-		System.setProperty("plugins.dir", pluginsDir);
-		
-		new ImageJ();		
-		
-		System.out.println(CVForge.PLUGINDIR);
-		
-		String imagePath = "C:/Users/Jan Martens/Desktop/minimal-ij1-plugin-master/hund_color.jpg";
-		//String imagePath = "http://imagej.net/images/clown.jpg";
-		ImagePlus image = IJ.openImage(imagePath);
-		image.show();
-		
-		ImageProcessor ip = image.getProcessor(); 
-
-		// run the plugin
-		IJ.runPlugIn(clazz.getName(), "");*/
-		
-		
 		Class<?> clazz = CVForgeLauncher.class;
 		String url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class").toString();
 		String pluginsDir = url.substring(5, url.length() - clazz.getName().length() - 6);
@@ -50,6 +30,5 @@ public class Main{
 
 		// run the plugin
 		IJ.runPlugIn(clazz.getName(), "");
-		
 	}
 }

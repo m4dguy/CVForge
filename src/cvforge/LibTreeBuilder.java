@@ -21,12 +21,24 @@ public class LibTreeBuilder {
 	 * @param path Path to jar file.
 	 * @return JTree representing the library.
 	 */
-    public static JTree generateLibTree(String path) throws Exception{
+    public static JTree generateLibTree(String path, ClassLoader loader, boolean shardsOnly) throws Exception{
         String rootName = getLibName(path);
         HashMap<String, FilteredTreeNode> cache = new HashMap<String, FilteredTreeNode>();
         FilteredTreeNode root = new FilteredTreeNode(rootName);        
-        List<Class> classes = JarInspector.loadClassesFromJar(path);
+        List<Class> classes = JarInspector.loadClassesFromJar(path, loader);
         for(Class c: classes){
+        	// skip non-shards if shardOnly-mode
+        	if(shardsOnly){
+        		boolean isShard = false;
+        		Class[] interfaces = c.getInterfaces();
+        		for(Class inter: interfaces){
+        			isShard |= inter.getSimpleName().equals("CVForgeShard");
+        		}
+        		if(!isShard){
+        			continue;
+        		}
+        	}
+
             // hook package into lib definition tree
             Package pack = c.getPackage();
             FilteredTreeNode packNode = cache.get(pack.toString());
@@ -56,11 +68,17 @@ public class LibTreeBuilder {
         }
         return new JTree(new FilteredTreeModel(root));
     }
+    
+    
+    
+    public static JTree generateLibTree(String path, ClassLoader loader) throws Exception{
+    	return generateLibTree(path, loader, false);
+    }
 
 	/**
 	 * Find childnode of root with fitting name. Uses breadth-first search.
 	 * @param root Root node for starting search.
-	 * @param childName String containg name of node.
+	 * @param childName String containing name of node.
 	 * @return Matching node if any, null else.
 	 */
     protected static DefaultMutableTreeNode findChild(DefaultMutableTreeNode root, String childName){

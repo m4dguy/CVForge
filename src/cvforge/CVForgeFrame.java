@@ -86,8 +86,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         switchJar(lib);
         setupMenubar();
         
-        setResizable(true);
-        //setVisible(true);  
+        setResizable(true);  
     }
 
     /**
@@ -105,6 +104,8 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         this.add(libTreePane, BorderLayout.CENTER);
         this.textFieldFilter.setEditable(!methodCache.isEmpty());
         this.pack();
+        //this.setLocation(FORGE.restoreWindowPosition());
+        //this.setSize(FORGE.restoreWindowSize());
     }
 
     /**
@@ -169,6 +170,8 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
     	
     	try{
     		FORGE.loadOpenCV(path);
+    		FORGE.loadShards();
+    		
 	    	methodCache = FORGE.getMethodCache();
 	    	loadLibraryTree();
 	    	conFrame.setClassCache(FORGE.getClassCache());

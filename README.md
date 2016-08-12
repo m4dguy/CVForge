@@ -1,6 +1,8 @@
-## CVForge 0.4.0 beta
+## CVForge 0.5.0 beta
+
 Watch the demo video on youtube:
-* https://youtu.be/irnBuvW2dEo
+* https://youtu.be/irnBuvW2dEo feature demonstration of version 0.2.0 beta
+* https://youtu.be/vztRXJx6R44 Linux support of version 0.3.0 beta
 
 Pre-built jars are available in the "build" directory.
 Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
@@ -23,7 +25,7 @@ Use the guides and documentation on the OpenCV website for detailed information 
 * Expand your ImageJ functionality:
 OpenCV is a massive library containing a vast selection of cutting-edge methods.
 It is actively maintained and gets updated and extended regularly.
-If ImageJ is missing something you are looking for, you might find it here.
+If ImageJ is missing something you are looking for, you may find it here.
 
 * Considerable speed boost:
 Under-the-hood usage of C/C++ implementations lets you perform many operations in the blink of an eye.
@@ -32,23 +34,26 @@ Most methods you already know from ImageJ run faster and smoother here.
 * Comfortable user-interface: 
 OpenCV is a complex library which is meant to be used by programmers.
 CVForge provides a graphical user interface to use OpenCV in the most comfortable way possible.
-Easily reimplement code from tutorials by clicking your way through the interface!
 
-* Independent of OpenCV version:
+* Agnostic of OpenCV version:
 Download the latest OpenCV version or use an earlier one.
 You are free to load and use your own build of the OpenCV library.
 No matter your preference, you can switch between different versions on-the-fly and choose the one which suits you best.
 
 * Macro support:
-Enhance your productivity by recording your actions and running them as ImageJ macros.
+Enhance your productivity by recording actions and running them as ImageJ macros.
 
 * Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.
-CVForge itself uses converters and gives you access to them through the separate CVForgeConverion jar for your own scripts.
+CVForge itself uses converters and gives you access to them through the separate "CVForgeConverion" jar for your own scripts.
 
 * Flexible and portable support:
 No matter if Windows, Linux or Mac, CVForge runs on all major operating systems with only slight differences and full functionality.
-Independent of x86 or x64 architectures, CVForge will dynamically switch to the one currently used.
+Independent of x86 or x64 architectures, CVForge dynamically switches to the one currently used.
+
+* Shard system:
+Import your own or other jars with code based purely on OpenCV.
+Use them to perform complex processing and analysis workflows and bring the results back into ImageJ.
 
 
 
@@ -75,4 +80,4 @@ Manual OpenCV jar installation (Windows):
 
 OpenCV installation (Linux/ Mac):
 * Download and build OpenCV on your system
-* Once an OpenCV version with java a module is installed, CVForge will find and detect the jar in your system
+* Once an OpenCV version with a java module is installed, CVForge will find and detect the jar in your system

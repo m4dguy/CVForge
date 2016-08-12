@@ -1,20 +1,26 @@
 package cvforge;
 
+import reflectiontools.ClassInspector;
 import reflectiontools.JarInspector;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeModel;
 
 import ij.IJ;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.CharArrayWriter;
-//import java.awt.Point;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.Map.Entry;
+
+//import cvforge.CVForgeShard;
 
 
 public class CVForge {
@@ -165,7 +171,7 @@ public class CVForge {
         libTree = new JTree(new DefaultMutableTreeNode("No library loaded"));
         if(!methodCache.isEmpty()){        	
         	try{
-        		libTree = LibTreeBuilder.generateLibTree(libPath);
+        		libTree = LibTreeBuilder.generateLibTree(libPath, forgeLoader);
     		}catch(Exception e){
         		IJ.beep();
     			IJ.showStatus(e.toString());
@@ -176,6 +182,35 @@ public class CVForge {
         	}
         }
     }
+    
+    /**
+     * TODO
+     * Load shards from plugin folder and hook them into the library tree.
+     * 
+     */
+    public void loadShards(){
+    	File pluginDir = new File(PLUGINDIR);
+      	File[] shards = pluginDir.listFiles(new JarInspector.DefaultFilenameFilter(".shard.jar"));
+      	FilteredTreeNode newRoot = new FilteredTreeNode("root");
+      	newRoot.add((FilteredTreeNode)libTree.getModel().getRoot());
+      	
+       	for(File f: shards){
+    		try{
+    			String path = f.getAbsolutePath();
+    			forgeLoader.addURL(path);		
+    			HashMap<String, Method> shardCache = JarInspector.generateMethodCache(path, forgeLoader);
+    			this.methodCache.putAll(shardCache);
+
+    			// HACK
+				JTree shardTree = LibTreeBuilder.generateLibTree(path, forgeLoader, true);
+    			FilteredTreeNode shardRoot = (FilteredTreeNode)shardTree.getModel().getRoot();
+    			newRoot.add(shardRoot);
+    		}catch(Exception e){System.out.println(e);}
+    	}
+       	libTree = new JTree(new FilteredTreeModel(newRoot)); 
+       	libTree.setRootVisible(false);
+    }
+    
 
     /**
      * Install and remember OpenCV jar.
