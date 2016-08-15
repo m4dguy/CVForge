@@ -1,8 +1,9 @@
 ## CVForge 0.5.0 beta
 
 Watch the demo video on youtube:
-* https://youtu.be/irnBuvW2dEo feature demonstration of version 0.2.0 beta
+* https://youtu.be/irnBuvW2dEo Feature demonstration of version 0.2.0 beta
 * https://youtu.be/vztRXJx6R44 Linux support of version 0.3.0 beta
+* https://youtu.be/lmhwSU9VItE Feature demonstration of version 0.5.0 beta
 
 Pre-built jars are available in the "build" directory.
 Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
