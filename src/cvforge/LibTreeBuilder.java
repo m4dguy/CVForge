@@ -12,13 +12,14 @@ import java.util.*;
 /**
  * 
  */
-
 public class LibTreeBuilder {
 	/**
 	 * Generate a tree of methods in library of given path.
 	 * Methods are listed by subpackages and only included if they are public static void.
 	 * Each node of the tree contains the name of the method/ package/ class as a string. 
 	 * @param path Path to jar file.
+	 * @param loader ClassLoader to use.
+	 * @param shard Restrict loading to shards if true.
 	 * @return JTree representing the library.
 	 */
     public static JTree generateLibTree(String path, ClassLoader loader, boolean shardsOnly) throws Exception{
@@ -69,8 +70,14 @@ public class LibTreeBuilder {
         return new JTree(new FilteredTreeModel(root));
     }
     
-    
-    
+	/**
+	 * Generate a tree of methods in library of given path. Do not load shards.
+	 * Methods are listed by subpackages and only included if they are public static void.
+	 * Each node of the tree contains the name of the method/ package/ class as a string. 
+	 * @param path Path to jar file.
+	 * @param loader ClassLoader to use.
+	 * @return JTree representing the library.
+	 */
     public static JTree generateLibTree(String path, ClassLoader loader) throws Exception{
     	return generateLibTree(path, loader, false);
     }

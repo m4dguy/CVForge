@@ -12,6 +12,12 @@ import ij.Macro;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
 
+/**
+ * Launcher module creating either CVForgeFrame instance or setting up headless mode.
+ * CVForgeFrame is created in normal use case. 
+ * Headless mode directly acts on submitted arguments and is used for macros.
+ * In both cases a OpenCV is loaded and methods are created and cached.
+ */
 public class CVForgeLauncher implements PlugIn{
 	
 	// macro parameters

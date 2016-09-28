@@ -83,9 +83,14 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         CVForgeCache.addListener(callFrame);
         CVForgeCache.addListener(conFrame);
         String lib = FORGE.activeLib();
-        switchJar(lib);
-        setupMenubar();
         
+        if(lib != null){
+        	switchJar(lib);
+    	}else{
+    		this.setSize(200, 300);
+    	}
+        
+        setupMenubar();
         setResizable(true);  
     }
 
@@ -103,9 +108,13 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         setupTreeListener();
         this.add(libTreePane, BorderLayout.CENTER);
         this.textFieldFilter.setEditable(!methodCache.isEmpty());
+        
         this.pack();
-        //this.setLocation(FORGE.restoreWindowPosition());
-        //this.setSize(FORGE.restoreWindowSize());
+        Dimension winSize = FORGE.restoreWindowSize(); 
+    	if((winSize.width != 0) && (winSize.height != 0)){
+        	this.setSize(winSize);
+    	}
+        this.setLocation(FORGE.restoreWindowPosition());
     }
 
     /**
@@ -136,6 +145,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
      */
     public void pluginShutdown(){
         IJ.showStatus("shutting down CVForge");
+        FORGE.storeWindowDimensions(this.getLocation(), this.getSize());
         FORGE.saveSettings();
         callFrame.dispose();
         cacheFrame.dispose();
@@ -177,6 +187,7 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 	    	conFrame.setClassCache(FORGE.getClassCache());
 	    	IJ.showStatus("library loaded: " + path);
     	}catch(Exception e) {
+    		this.setSize(200, 300);
 			IJ.beep();
 			IJ.showStatus(e.toString());
 			if(FORGE.isVerbose()){
@@ -218,7 +229,10 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
         	final String label = i.substring(i.lastIndexOf(CVForge.SEP)+1, i.length());
         	MenuItem subItemLoad = new MenuItem(label);
         	subItemLoad.addActionListener(new ActionListener(){
-            	public void actionPerformed(ActionEvent e) {switchJar(label);}
+            	public void actionPerformed(ActionEvent e) {
+            		FORGE.storeWindowDimensions(getLocation(), getSize());
+            		switchJar(label);
+        		}
             });
         	subMenuLoad.add(subItemLoad);
         }

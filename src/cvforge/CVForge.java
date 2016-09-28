@@ -25,7 +25,7 @@ public class CVForge {
 	
 	public static final String SEP = System.getProperty("file.separator");
 	
-    public static final String VERSION = "CVForge v0.5 (beta)";
+    public static final String VERSION = "CVForge 1.0";
     public static final String CONFIGFILE = "cvforge.config";              // location of config file
     
     //public static final String PLUGINDIR = System.getProperty("user.dir") + SEP + "plugins" + SEP;
@@ -33,9 +33,7 @@ public class CVForge {
     
 	public static final String BITS = System.getProperty("sun.arch.data.model");		
 	public static final String OS = System.getProperty("os.name");
-	
-	//protected Point defaultFramePos = new Point(0, 0);
-	//protected Point defaultFrameSize = new Point(0,0);
+
     protected boolean verbose = true;
     protected String libPath = null;                                                // local path to active lib
     protected ArrayList<String> libsAvailable; 		                                // libs available for loading
@@ -46,8 +44,8 @@ public class CVForge {
     protected HashMap<String, Method> methodCache;                          // mapping of strings to methods
     protected HashMap<String, String> config;                               // config map
 
-    //protected ClassLoader forgeLoader = ClassLoader.getSystemClassLoader();
-    protected CVForgeClassLoader forgeLoader = new CVForgeClassLoader();
+    //protected CVForgeClassLoader forgeLoader = new CVForgeClassLoader();
+    protected CVForgeClassLoader forgeLoader;
     
     /**
      * Call initialization.
@@ -56,14 +54,14 @@ public class CVForge {
     	init();
     }
     
+    /**
+     * Utility to generate and fix path to ImageJ plugin directory.
+     * @return Path to ImageJ plugin directory.
+     */
     public static String getPluginPath(){
     	String dir = System.getProperty("plugins.dir");
     	dir = dir.replace("/", SEP);
-    	dir = dir.replace("%20", " ");
-    	
-    	//dir += "plugins" + SEP;
-    	//return dir.substring(1,  dir.length());
-    	
+    	dir = dir.replace("%20", " ");    	
     	dir += SEP + "plugins" + SEP;
     	return dir;
     }
@@ -85,7 +83,7 @@ public class CVForge {
     }
 
     /**
-     * Load config file
+     * Load config file.
      * @param path
      */
     protected void loadConfig(String path){
@@ -120,7 +118,7 @@ public class CVForge {
      * @see generateLibraryTree()
      * @param version Library version/ path to load.
      */
-    public void loadOpenCV(String version) throws Exception{ 
+    public void loadOpenCV(String version) throws Exception{
     	String nativePath, jarPath, libName;
     	String bits = (BITS.equals("64"))? "64": "86"; 
 
@@ -132,6 +130,16 @@ public class CVForge {
     	boolean isMac = OS.contains("Mac");
     	
     	try{
+    		// fallback if libPath in config file does not exist
+	    	if(!libsAvailable.contains(version)){
+	    		if(libsAvailable.size() > 0){
+	    			libsAvailable.get(0);
+	    		}else{
+	    			throw new NullPointerException("OpenCV file " + version + " does not exist");
+	    		}
+    		}
+    		
+    		// load path generation
 	    	if(isWin){
 	    		nativePath = PLUGINDIR + "x" + bits + SEP;
 	    		jarPath = PLUGINDIR;
@@ -144,11 +152,12 @@ public class CVForge {
 	    		IJ.showMessage("Operating system not recognized.\nUnable to load native libraries.");
 	    		return;
 	    	}
-	    	
-	    	if((version != null)/* && libsAvailable.contains(version)*/){    		
+	  
+	    	if(version != null){    		
 	        	libPath = jarPath + version;
 	            config.put("libPath", version);
 	            
+	            forgeLoader = new CVForgeClassLoader();
 	            forgeLoader.addURL(libPath);
 	            methodCache = JarInspector.generateMethodCache(libPath, forgeLoader);
 	            classCache = JarInspector.generateConstructableClassCache(libPath, forgeLoader);
@@ -157,8 +166,10 @@ public class CVForge {
 	            if(!methodCache.isEmpty()){
 	        		Executer.initCVForgeExecuter(libPath, (nativePath + libName), forgeLoader);
 	        	}
+	    	}else{
+	    		throw new NullPointerException("OpenCV jar " + version + " not found");
 	    	}
-    	}catch(Exception e){}
+    	}catch(Exception e){System.out.println(e);}
     	generateLibraryTree();
     }
 
@@ -182,9 +193,7 @@ public class CVForge {
     }
     
     /**
-     * TODO
      * Load shards from plugin folder and hook them into the library tree.
-     * 
      */
     public void loadShards(){
     	File pluginDir = new File(PLUGINDIR);

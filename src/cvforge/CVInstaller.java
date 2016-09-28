@@ -103,7 +103,7 @@ public class CVInstaller {
         	//addClassPath(dstJar.getAbsolutePath());
         	//addClassPath(cvFile.getAbsolutePath());
         	//loader.addURL(dstJar.getAbsolutePath());
-        	loader.addURL(cvPath);
+        	//loader.addURL(cvPath);
     	}catch( Exception e ){
     		IJ.showMessage("installation error");
         	return false;

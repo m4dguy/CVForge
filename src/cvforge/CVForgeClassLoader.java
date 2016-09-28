@@ -3,15 +3,17 @@ package cvforge;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 
-import ij.io.PluginClassLoader;
+import ij.IJ;
 
 /**
  * Used to replace ImageJ PluginClassLoader.
- * Keeps classinformation up-to-date.
- * Has accessable method for adding new classes, thus bypassing reflections
+ * Keeps classinformation up-to-date. Has method for adding new classes.
+ * Mainly used to avoid "jar hell" problem,
+ * where multiple definitions of opencv may not be loaded simultaneously. 
  */
-public class CVForgeClassLoader extends PluginClassLoader{
+public class CVForgeClassLoader extends URLClassLoader{
 
 	protected static final String PLUGINDIR = CVForge.PLUGINDIR;
 	
@@ -19,15 +21,18 @@ public class CVForgeClassLoader extends PluginClassLoader{
 	 * Initialize by loading imagej plugin dir. 
 	 */
 	CVForgeClassLoader(){
-		this(PLUGINDIR);
+		super(new URL[0], ClassLoader.getSystemClassLoader());
+		//this.loadIJ();
 	}
-	
+		
 	/**
-	 * Initialize loader and get classes from defined directory.
-	 * @param path Path with classes for initilization.
+	 * Hook definitions for ImageJ classes into loader.
 	 */
-	CVForgeClassLoader(String path){
-		super(path);
+	public void loadIJ(){		
+		String ijPath = PLUGINDIR.substring(0, PLUGINDIR.length()-1);
+		ijPath = ijPath.substring(0, ijPath.lastIndexOf(CVForge.SEP));
+		try{this.addURL(new URL(ijPath + "ij.jar"));}
+		catch(Exception e){IJ.showMessage("IJ load failed");}
 	}
 	
 	/**
@@ -41,7 +46,12 @@ public class CVForgeClassLoader extends PluginClassLoader{
         this.addURL(f.toURI().toURL());
 	}
 		
-	// Overloaded version for url.
+	/**
+	 * Add classes in url to defined classes.
+	 * Should point to jar file.
+	 * @param url URL to jar.  
+	 * @return true, if loading successful.
+	 */
 	public void addURL(URL url){
 		super.addURL(url);
 	}

@@ -1,14 +1,18 @@
-## CVForge 0.5.0 beta
+## CVForge 1.0
 
-Watch the demo video on youtube:
+Watch the demo videos on YouTube:
 * https://youtu.be/irnBuvW2dEo Feature demonstration of version 0.2.0 beta
 * https://youtu.be/vztRXJx6R44 Linux support of version 0.3.0 beta
 * https://youtu.be/lmhwSU9VItE Feature demonstration of version 0.5.0 beta
+* [TODO] Installation guide and feature overview of full release
+* [TODO] Shard creation demo
+
+
+Project to be closed soon. Send bug reports and feature wish lists till the end of 2016.
 
 Pre-built jars are available in the "build" directory.
-Be aware that this software is in early beta stage. What you have here is work-in-progress and subject to changes.
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
-A report should contain error messages, a list of steps leading to the bug and the image you used. 
+A report should contain error messages, a list of steps leading to the bug and the image you used.  
 
 
 CVForge aims to close the gap between the popular tool ImageJ and the powerful OpenCV library.
