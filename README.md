@@ -4,8 +4,7 @@ Watch the demo videos on YouTube:
 * https://youtu.be/irnBuvW2dEo Feature demonstration of version 0.2.0 beta
 * https://youtu.be/vztRXJx6R44 Linux support of version 0.3.0 beta
 * https://youtu.be/lmhwSU9VItE Feature demonstration of version 0.5.0 beta
-* [TODO] Installation guide and feature overview of full release
-* [TODO] Shard creation demo
+* https://www.youtube.com/watch?v=PDQCJ47GEAw Shard creation demo
 
 
 Project to be closed soon. Send bug reports and feature wish lists till the end of 2016.
@@ -65,16 +64,16 @@ Use them to perform complex processing and analysis workflows and bring the resu
 ## Installation
 
 Installation:
-* Copy "CVForge_[version number].jar", "CVForgeConversion.jar" and "ReflectionTools.jar" into the ImageJ plugin folder.
+* Copy "CVForge_[version number].jar" and "CVForgeConversion.jar" into the ImageJ plugin folder.
 * To use OpenCV functions, you need to install an OpenCV jar (see the following sections).
 
-Automatic OpenCV jar installation (Windows):
+Automated OpenCV jar installation (Windows):
 * Launch CVForge from inside of ImageJ
 * In CVForge, click "Plugin" > "Install"
 * Navigate to the OpenCV folder you downloaded from the OpenCV website
 * Navigate to the "build" > "java" directory
 * Select and open the file "opencv-[version number].jar"
-* CVForge will copy the necessary files into the plugin folder of ImageJ
+* CVForge will copy the necessary files into the plugins folder of ImageJ
 * Fiji users must restart the application.
 
 Manual OpenCV jar installation (Windows):
@@ -86,3 +85,15 @@ Manual OpenCV jar installation (Windows):
 OpenCV installation (Linux/ Mac):
 * Download and build OpenCV on your system
 * Once an OpenCV version with a java module is installed, CVForge will find and detect the jar in your system
+
+
+## Towards Fiji
+CVForge was build and optimised for use with ImageJ.
+Internal key processes inside Fiji are different from plain ImageJ. 
+Thus, the following bugs may occur: 
+* Installation bug:
+Automated OpenCV jar installation may cause an error message to pop up.
+Installation will we successful though, but the user must restart Fiji.
+* OpenCV jar switch:
+Switching OpenCV jars will be of no effect.
+Only the jar Fiji's classloaders finds first, can be used. 
