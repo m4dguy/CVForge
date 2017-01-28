@@ -10,6 +10,7 @@ Watch the demo videos on YouTube:
 Project to be closed soon. Send bug reports and feature wish lists till the end of 2016.
 
 Pre-built jars are available in the "build" directory.
+ImageJ with Java8 is required.
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
 A report should contain error messages, a list of steps leading to the bug and the image you used.  
 
@@ -49,7 +50,7 @@ Enhance your productivity by recording actions and running them as ImageJ macros
 
 * Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.
-CVForge itself uses converters and gives you access to them through the separate "CVForgeConverion" jar for your own scripts.
+CVForge itself uses converters and gives you access to them through the separate "CVForgeConversion" jar for your own scripts.
 
 * Flexible and portable support:
 No matter if Windows, Linux or Mac, CVForge runs on all major operating systems with only slight differences and full functionality.
@@ -65,7 +66,7 @@ Use them to perform complex processing and analysis workflows and bring the resu
 
 Installation:
 * Copy "CVForge_[version number].jar" and "CVForgeConversion.jar" into the ImageJ plugin folder.
-* To use OpenCV functions, you need to install an OpenCV jar (see the following sections).
+* To use OpenCV functions, you need to install an OpenCV jar (see the following sections). Manual installation is recommended.
 
 Automated OpenCV jar installation (Windows):
 * Launch CVForge from inside of ImageJ
@@ -84,7 +85,7 @@ Manual OpenCV jar installation (Windows):
 
 OpenCV installation (Linux/ Mac):
 * Download and build OpenCV on your system
-* Once an OpenCV version with a java module is installed, CVForge will find and detect the jar in your system
+* Once an OpenCV version with a java module is installed, CVForge will find and detect the jar on your system
 
 
 ## Towards Fiji
@@ -97,3 +98,17 @@ Installation will we successful though, but the user must restart Fiji.
 * OpenCV jar switch:
 Switching OpenCV jars will be of no effect.
 Only the jar Fiji's classloaders finds first, can be used. 
+
+
+## Build and development instructions
+Simple build:
+* Download and extract the src directory.
+* Download a working OpenCV jar (version is arbitrary).
+* Build the CVForgeConversion module and export it as a jar (this jar MUST be named CVForgeConversion.jar).
+* Build the ReflectionTools and the CVForge modules.
+* Export plugins.config, ReflectionTools and CVForge into a single jar (this will be the plugin's main jar).
+* You will need both generated jars to run CVForge in ImageJ.
+
+Running and testing inside the IDE:
+* Copy the CVForgeConversion and the OpenCV jars into your IDE's build target directory.
+* Run Main.java
