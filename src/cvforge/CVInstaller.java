@@ -6,12 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import ij.IJ;
-import ij.io.PluginClassLoader;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import cvforgeconversion.CVForgeExecuter;
 
 import reflectiontools.JarInspector;
 

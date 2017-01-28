@@ -8,8 +8,6 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.*;
 
-import ij.IJ;
-
 /**
   * Reflection toolkit.
   * Inspector for jars and classes.

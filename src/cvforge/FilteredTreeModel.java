@@ -1,6 +1,5 @@
 package cvforge;
 
-import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 

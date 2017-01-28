@@ -1,12 +1,9 @@
 package cvforge;
 
-import reflectiontools.ClassInspector;
 import reflectiontools.JarInspector;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeModel;
 
 import ij.IJ;
 
@@ -18,7 +15,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.Map.Entry;
 
 
 public class CVForge {
@@ -61,9 +57,14 @@ public class CVForge {
     public static String getPluginPath(){
     	String dir = System.getProperty("plugins.dir");
     	dir = dir.replace("/", SEP);
-    	dir = dir.replace("%20", " ");    	
-    	dir += SEP + "plugins" + SEP;
-    	return dir;
+    	dir = dir.replace("%20", " ");
+    	
+    	if(dir.endsWith("plugins") || dir.endsWith("plugins"+SEP)){
+    		return dir;
+    	}else{
+        	dir += SEP + "plugins" + SEP;
+        	return dir;	
+    	}
     }
 
     /**

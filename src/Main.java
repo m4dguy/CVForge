@@ -1,9 +1,4 @@
 
-import java.util.Enumeration;
-import java.util.Properties;
-
-import cvforge.CVForge;
-import cvforge.CVForgeFrame;
 import cvforge.CVForgeLauncher;
 import ij.IJ;
 import ij.ImageJ;

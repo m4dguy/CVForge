@@ -1,13 +1,8 @@
 package cvforge;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import ij.IJ;
 import reflectiontools.JarInspector;
