@@ -7,7 +7,7 @@ Watch the demo videos on YouTube:
 * https://www.youtube.com/watch?v=PDQCJ47GEAw Shard creation demo
 
 
-Project to be closed soon. Send bug reports and feature wish lists till the end of 2016.
+Active development of main project discontinued. Feel free to send your bug reports.
 
 Pre-built jars are available in the "build" directory.
 ImageJ with Java8 is required.
