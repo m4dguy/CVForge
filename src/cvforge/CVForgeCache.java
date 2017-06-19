@@ -12,10 +12,13 @@ import ij.IJ;
 import ij.WindowManager;
 import ij.process.ImageProcessor;
 
+/**
+ * Cache for objects created e.g. by the CVForgeConstructor or method calls. 
+ */
 public class CVForgeCache {
-
 	// cached objects with names associated to them.
 	protected static HashMap<String, Object> cache = new HashMap<String, Object>();
+	// listeners notified if cache changes
 	protected static LinkedList<CacheListener> listeners = new LinkedList<CacheListener>();
 	
 	

@@ -6,15 +6,23 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.ImageWindow;
 import ij.gui.Roi;
 
-
+/**
+ * Helper methods which create GUI input elements like ComboBoxes and Textfields.
+ */
 public class InputHelpers {
-    // declaration for parameter recognition
+    // declarations for parameter recognition
 	protected static final String CVMAT = "org.opencv.core.Mat";
+	// TODO add more (yes its work, yes it need to be done))
+	protected static final String CVMATOFBYTE = "org.opencv.core.MatOfByte";
+	protected static final String CVKEYPOINT = "org.opencv.features2d.KeyPoint";
+	
+	// default number of ComboBox elements visible at a time
 	protected static final int BOXSIZE = 5;
 	
 	/**
@@ -62,7 +70,10 @@ public class InputHelpers {
 		return limitLength(src, 15);		
 	}
 	
-	// TODO provide cache access
+	/**
+	 * Create input ComboBox for ImageJ images.
+	 * @return
+	 */
     public static JComboBox<String> createMatBox(){
     	String[] imageTitles = WindowManager.getImageTitles();
     	JComboBox<String> matBox = new JComboBox<String>(imageTitles);
@@ -76,6 +87,11 @@ public class InputHelpers {
     	return matBox;
     }
     
+    // TODO unused
+    /**
+     * Create JComboBox for selecting ROIs created in ImageJ.
+     * @return
+     */
     public static JComboBox<String> createRoiBox(){
     	String[] imageTitles = WindowManager.getImageTitles();
     	
@@ -95,13 +111,11 @@ public class InputHelpers {
     	ImageWindow win = WindowManager.getCurrentWindow();
     	if(win != null){
     		if(elements.contains(win.getTitle())){
-    				roiBox.setSelectedItem(win.getName());
+				roiBox.setSelectedItem(win.getName());
     		}
     	}
     	return roiBox;
     }
-    
-    
     
     /**
      * Create a JComboBox of boolean values.
@@ -154,7 +168,7 @@ public class InputHelpers {
     			input = new JNumberField();        			
     		}
         }else{
-        	if(classType.getName() == CVMAT){
+        	if(classType.getName().equals(CVMAT)){
         		input = InputHelpers.createMatBox();
         	}else if(classType == String.class){
         		input = new JTextField("");
@@ -175,8 +189,7 @@ public class InputHelpers {
 		if(comp instanceof JTextField)
     		return ((JTextField)comp).getText();
 		else if(comp instanceof JComboBox)
-    		return ((JComboBox<String>)comp).getSelectedItem().toString();
-    	
+			return ((JComboBox<String>)comp).getSelectedItem().toString();    	
 		return comp.toString();
 	}
 	
@@ -196,10 +209,15 @@ public class InputHelpers {
 		if((classType.isPrimitive()) || (classType == String.class)){
     		converted = InputHelpers.stringToPrimitive(text, classType);
     	}else{
-    		if(className == CVMAT){
+    		// if corresponding window if input is image
+    		if(className.equals(CVMAT)){
         		converted = WindowManager.getImage(text).getProcessor(); 
     		}else{
+    			// if input is cached cache lookup
     			converted = CVForgeCache.get(text);
+    			if(converted == null){
+    				IJ.showMessage("CVForge Error", "Cache lookup for named object \"" + text + "\" failed!");
+    			}
     		}
     	}
 		return converted;

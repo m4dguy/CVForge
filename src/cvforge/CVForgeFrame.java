@@ -389,12 +389,13 @@ public class CVForgeFrame extends PlugInFrame implements ActionListener {
 				if(Recorder.record){
 					String methodArgs = callFrame.getMethodArgs();
 					Recorder.record("run", "CVForge", methodArgs);		
-				}
-					
+				}					
 				Executer.executeMethod(callFrame.getActiveMethod(), callFrame.extractParameters(), callFrame.getReturnName());
 				IJ.showStatus((System.currentTimeMillis()-startTime)+" milliseconds");
 			} catch(OutOfMemoryError e) {
 				IJ.outOfMemory(CVForge.VERSION);
+			} catch(NullPointerException e){
+				IJ.showMessage("CVForge Error", "One or more input parameters are undefined");
 			} catch(Exception e) {
 				IJ.beep();
 				IJ.showStatus(e.toString());

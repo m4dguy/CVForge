@@ -15,8 +15,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * Provide cache for objects.
- *
+ * Provide cache for objects and notify listeners if new objects have been added.
  */
 public class CVForgeConstructorFrame extends JDialog implements ActionListener, CacheListener{
 	
@@ -87,8 +86,6 @@ public class CVForgeConstructorFrame extends JDialog implements ActionListener, 
         
 		for(Entry<String, Class> entry: classCache.entrySet())
 			classBox.addItem(entry.getValue().getSimpleName());
-		
-		//setVisible(!classCache.isEmpty());
 	}
     
 	/**
@@ -161,7 +158,6 @@ public class CVForgeConstructorFrame extends JDialog implements ActionListener, 
      * Creates an Object based on the parameters extracted from the GUI.
      * Adds this Object immediately to the cache.
      */
-    // TODO move to executer
     public void createObject(){
     	try{
     		Constructor activeConstructor = getActiveConstructor();
@@ -180,7 +176,7 @@ public class CVForgeConstructorFrame extends JDialog implements ActionListener, 
     	Class classType = classCache.get(className);
     	createConstructorLists(classType);
     }
-    
+
 	public void cacheChanged(){
 		createConstructorLists(templateClass);
 	}

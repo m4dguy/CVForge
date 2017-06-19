@@ -95,7 +95,6 @@ public class CVForgeCallFrame extends JDialog implements CacheListener{
         	JComponent comp = components.get(i);
         	String arg = InputHelpers.getText(comp);
         	String currentName = WindowManager.getCurrentWindow().getTitle();
-        	
         	if(arg.equals(currentName)){
         		arg = "[currentWindow]";
         	}

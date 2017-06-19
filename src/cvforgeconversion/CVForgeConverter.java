@@ -1,10 +1,13 @@
 package cvforgeconversion;
 
+import java.awt.Rectangle;
 import ij.process.ImageProcessor;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ShortProcessor;
+import ij.measure.ResultsTable;
+import ij.plugin.filter.Analyzer;
 import ij.gui.Roi;
 
 import org.opencv.core.Mat;
@@ -16,13 +19,9 @@ import org.opencv.core.Size;
 
 
 /**
- * Converters for imagej images and opencv images.
- * Important: 	still limited to one channel only due to conversion!
- * 				colour images thus not yet supported!
- * 
- * 
- * http://answers.opencv.org/question/5/how-to-get-and-modify-the-pixel-of-mat-in-java/
- * 
+ * Converters for ImageJ objects and OpenCV objects.
+ * These converters provide the "glue" necessary for ImageJ/OpenCV interop.
+ * This class is kept in a self-contained package to keep the CVForge core package clean and free of any direct dependency to OpenCV.
  */
 public final class CVForgeConverter{	
 	
@@ -35,8 +34,12 @@ public final class CVForgeConverter{
 		return CvType.makeType(depth, channels);
 	}*/
 	
-	// cv type conversion
-	// TODO replace this by upper method
+	/**
+	 * TODO replace this by upper method
+	 * Get OpenCV Mat type corresponding to given ImageProcessor.
+	 * @param ip
+	 * @return
+	 */
 	public static int toCvType(ImageProcessor ip){
 		switch(ip.getBitDepth()){
 			case 8:
@@ -155,7 +158,44 @@ public final class CVForgeConverter{
 			default: 
 				throw new RuntimeException("Unsupported image type: " + ip.getClass().getSimpleName());
 		}
+    	// TODO roi extraction fails! we dont get a submatrix!
+    	// extract ROI
+    	Rectangle ijRoi = ip.getRoi();
+		Rect roi = new Rect(ijRoi.x, ijRoi.y, ijRoi.width, ijRoi.height);
+		cvmat = new Mat(cvmat, roi);
     }
+    
+    /**
+     * Convert Mat to ImageProcessor.
+     * Resize ImpageProcessor if necessary.
+     * @param cvmat Input Mat.
+     * @param ip ImageProcessor in which to load cvmat.
+     * @param offsetX x origin of offset.
+     * @param offsetY y origin of offset.
+     * @throws RuntimeException In case that Mat is of unknown or incompatible type.
+     */
+    public static void cv2ij(Mat cvmat, ImageProcessor ip, int offsetX, int offsetY){		
+    	final int type = cvmat.type();
+    	switch(type){
+			case CvType.CV_8U: 
+				toGrayProcessor(cvmat, ip, offsetX, offsetY);
+				break;
+			case CvType.CV_16U:
+				toGrayProcessor(cvmat, ip, offsetX, offsetY);
+				break;
+			case CvType.CV_32F: 
+				toGrayProcessor(cvmat, ip, offsetX, offsetY);
+				break;
+			case CvType.CV_32S: 
+				toGrayProcessor(cvmat, ip, offsetX, offsetY);
+				break;	
+			case CV_8UC3:
+				toColorProcessor(cvmat, (ColorProcessor)ip, offsetX, offsetY);
+				break;
+			default:
+				throw new RuntimeException("Unsupported image type " + CvType.typeToString(type));
+		}
+	}
     
     /**
      * Convert Mat to ImageProcessor.
@@ -164,32 +204,13 @@ public final class CVForgeConverter{
      * @param ip ImageProcessor in which to load cvmat.
      * @throws RuntimeException In case that Mat is of unknown or incompatible type.
      */
-    public static void cv2ij(Mat cvmat, ImageProcessor ip){		
-    	final int type = cvmat.type();
-		switch(type){
-			case CvType.CV_8U: 
-				cvmat.get(0, 0, (byte[])ip.getPixels());
-				break;
-			case CvType.CV_16U: 
-				cvmat.get(0, 0, (short[])ip.getPixels());
-				break;
-			case CvType.CV_32F: 
-				cvmat.get(0, 0, (float[])ip.getPixels());
-				break;
-			case CvType.CV_32S: 
-				cvmat.get(0, 0, (int[])ip.getPixels());
-				break;	
-			case CV_8UC3:
-				toColorProcessor(cvmat, (ColorProcessor)ip);
-				break;
-			default:
-				throw new RuntimeException("Unsupported image type " + CvType.typeToString(type));
-		}
-	}
-    
+    public static void cv2ij(Mat cvmat, ImageProcessor ip){
+    	cv2ij(cvmat, ip, 0, 0);
+    }
+        
     /**
      * Helper for conversion of ColorProcessor to Mat.
-     * Data layouts are different which is why we need this method.
+     * Data layouts are different which is why we need to manually iterate over the underlying arrays.
      * @param ip ColorProcessor to convert.
      * @param cvmat converted Mat
      */
@@ -208,13 +229,48 @@ public final class CVForgeConverter{
     	}
     }
     
-    /**
-     * Helper for conversion of Mat to ColorProcessor.
-     * Data layouts are different which is why we need this method.
+	/**
+	 * Conversion method for generic gray-value ImageProcessors.
+	 * Covers special case if cvmat is actually a submatrix of ip.
      * @param cvmat Mat to convert.
      * @param ip converted ColorProcessor
+     * @param offsetX offset for copying data
+     * @param offsetY offset for copying data
      */
-    protected static void toColorProcessor(Mat cvmat, ColorProcessor ip){
+    protected static void toGrayProcessor(Mat cvmat, ImageProcessor ip, int offsetX, int offsetY){
+    	final int width = cvmat.width();
+    	final int height = cvmat.height();
+    	for(int y=0; y<height; ++y){
+    		for(int x=0; x<width; ++x){
+    			double[] pix = cvmat.get(y, x);
+				ip.putPixel(x+offsetX, y+offsetY, (int)pix[0]);
+    		}
+    	}
+    }
+    
+    /**
+	 * Conversion method for generic gray-value ImageProcessors.
+	 * Covers special case if cvmat is actually a submatrix of ip.
+     * Offset values define are to be used if cvmat is actually a submatrix.
+     * @param cvmat Mat to convert.
+     * @param ip converted ColorProcessor
+     * @param offsetX offset for copying data
+     * @param offsetY offset for copying data
+     */
+    protected static void toGrayProcessor(Mat cvmat, ImageProcessor ip){
+    	toGrayProcessor(cvmat, ip, 0, 0);
+    }
+    
+    /**
+     * Helper for conversion of Mat to ColorProcessor.
+     * Data layouts are different which is why we need to manually iterate over the underlying arrays.
+     * Offset values define are to be used if cvmat is actually a submatrix.
+     * @param cvmat Mat to convert.
+     * @param ip converted ColorProcessor
+     * @param offsetX offset for copying data
+     * @param offsetY offset for copying data
+     */
+    protected static void toColorProcessor(Mat cvmat, ColorProcessor ip, int offsetX, int offsetY){
     	final int width = cvmat.width();
     	final int height = cvmat.height();
     	for(int y=0; y<height; ++y){
@@ -223,8 +279,35 @@ public final class CVForgeConverter{
 				int r = (int)data[2];
 				int g = (int)data[1];
 				int b = (int)data[0];
-				ip.putPixel(x, y, ((r<<16)|(g<<8)|b));
+				ip.putPixel(x+offsetX, y+offsetY, ((r<<16)|(g<<8)|b));
     		}
     	}
+    }
+    
+    /**
+     * Overloaded method, if cvmat is not a submatrix.
+     * @param cvmat Mat to convert.
+     * @param ip converted ColorProcessor.
+     */
+    protected static void toColorProcessor(Mat cvmat, ColorProcessor ip){
+    	toColorProcessor(cvmat, ip, 0, 0);
+    }
+    
+    //TODO complete and integrate this! the same needs to be done for MatOfPoints and others!!
+    /**
+     * Convert raw array to ImageJ result table.
+     * @param array
+     * @param table
+     */
+    public static void toResultTable(float[][] array, ResultsTable table){
+    	table = new ResultsTable();
+    	for(int i=0; i<array.length; ++i){
+    		table.incrementCounter();
+    		for(int j=0; j<array[i].length; ++j){
+    			table.addValue("slice", array[i][j]);
+    		}
+    	}
+    	Analyzer.setResultsTable(table);
+    	table.show("Results");
     }
 }

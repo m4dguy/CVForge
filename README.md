@@ -7,12 +7,13 @@ Watch the demo videos on YouTube:
 * https://www.youtube.com/watch?v=PDQCJ47GEAw Shard creation demo
 
 
-Active development of main project discontinued. Feel free to send your bug reports.
+Project in maintenance. Feel free to send bug reports and feature wish lists.
 
 Pre-built jars are available in the "build" directory.
 ImageJ with Java8 is required.
 If you encounter bugs or strange behaviour, please send a report to janmartens@live.de
 A report should contain error messages, a list of steps leading to the bug and the image you used.  
+
 
 
 CVForge aims to close the gap between the popular tool ImageJ and the powerful OpenCV library.
@@ -22,6 +23,14 @@ Use the guides and documentation on the OpenCV website for detailed information 
 * http://docs.opencv.org/2.4/doc/tutorials/tutorials.html
 * http://docs.opencv.org/2.4/modules/refman.html
 * http://opencv.org/opencv-java-api.html
+
+
+
+Check out the CVForge shards! They extend CVForge and simplify method usage.
+ArmorShard:
+* (to be released) [ArmorShard](https://github.com/m4dguy/ArmorShard): Offers simplified access and improved ImageJ integration of various OpenCV methods. Pick it up and take the lead!
+* (to be released) [ImanShard](https://github.com/m4dguy/ImanShard): Image analysis shard for a handful of scenarios.
+* [ShardDemo](https://github.com/m4dguy/ShardDemo): A demo example for developers.
 
 
  
@@ -45,8 +54,9 @@ Download the latest OpenCV version or use an earlier one.
 You are free to load and use your own build of the OpenCV library.
 No matter your preference, you can switch between different versions on-the-fly and choose the one which suits you best.
 
-* Macro support:
+* ImageJ integration:
 Enhance your productivity by recording actions and running them as ImageJ macros.
+Use ImageJ's regions of of interest to analyze only specific parts of your image.
 
 * Interface for Scripting:
 Convert ImageJ objects to OpenCV objects and vice versa.

@@ -16,7 +16,9 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.*;
 
-
+/**
+ * Load and cache all relevant structures.
+ */
 public class CVForge {
 	
 	public static final String SEP = System.getProperty("file.separator");

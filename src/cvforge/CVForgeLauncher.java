@@ -12,6 +12,8 @@ import ij.Macro;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
 
+import cvforge.CVForgeCache;
+
 /**
  * Launcher module creating either CVForgeFrame instance or setting up headless mode.
  * CVForgeFrame is created in normal use case. 
@@ -143,8 +145,16 @@ public class CVForgeLauncher implements PlugIn{
 				if(param.getName().equals(InputHelpers.CVMAT)){
 					if(arg.equals("[currentWindow]")){
 						arg = WindowManager.getCurrentWindow().getTitle();
+						conv[i] = WindowManager.getImage(arg).getProcessor();
 					}
-					conv[i] = WindowManager.getImage(arg).getProcessor();	
+				}
+				// if object is cached, do lookup
+				if(arg.startsWith("[cache:")){
+					String key = arg.substring(7, arg.length()-2);
+					conv[i] = CVForgeCache.get(key);
+					if(conv[i] == null){
+						IJ.showMessage("CVForge Error", "Cache lookup for named object \"" + key + "\" failed!");
+					}
 				}
 			}
 		}
