@@ -24,8 +24,12 @@ import org.opencv.core.Size;
  * This class is kept in a self-contained package to keep the CVForge core package clean and free of any direct dependency to OpenCV.
  */
 public final class CVForgeConverter{	
-	
+	// predefinitions
 	protected static final int CV_8UC3 = 16;
+	protected static final int CV_8U = CvType.CV_8U;
+	protected static final int CV_16U = CvType.CV_16U;
+	protected static final int CV_32S = CvType.CV_32S;
+	protected static final int CV_32F = CvType.CV_32F;
 	
 	// get corresponding cvtype of imageprocessor
 	/*public static int toCvType(ImageProcessor ip){
@@ -176,22 +180,14 @@ public final class CVForgeConverter{
      */
     public static void cv2ij(Mat cvmat, ImageProcessor ip, int offsetX, int offsetY){		
     	final int type = cvmat.type();
-    	switch(type){
-			case CvType.CV_8U: 
+    	final int channels = cvmat.channels();
+    	switch(channels){
+			case 1:
 				toGrayProcessor(cvmat, ip, offsetX, offsetY);
 				break;
-			case CvType.CV_16U:
-				toGrayProcessor(cvmat, ip, offsetX, offsetY);
-				break;
-			case CvType.CV_32F: 
-				toGrayProcessor(cvmat, ip, offsetX, offsetY);
-				break;
-			case CvType.CV_32S: 
-				toGrayProcessor(cvmat, ip, offsetX, offsetY);
-				break;	
-			case CV_8UC3:
+			case 3:
 				toColorProcessor(cvmat, (ColorProcessor)ip, offsetX, offsetY);
-				break;
+				break;	
 			default:
 				throw new RuntimeException("Unsupported image type " + CvType.typeToString(type));
 		}
@@ -233,7 +229,7 @@ public final class CVForgeConverter{
 	 * Conversion method for generic gray-value ImageProcessors.
 	 * Covers special case if cvmat is actually a submatrix of ip.
      * @param cvmat Mat to convert.
-     * @param ip converted ColorProcessor
+     * @param ip converted ImageProcessor
      * @param offsetX offset for copying data
      * @param offsetY offset for copying data
      */
@@ -243,7 +239,8 @@ public final class CVForgeConverter{
     	for(int y=0; y<height; ++y){
     		for(int x=0; x<width; ++x){
     			double[] pix = cvmat.get(y, x);
-				ip.putPixel(x+offsetX, y+offsetY, (int)pix[0]);
+    			int[] conv = {(int)pix[0], (int)pix[0], (int)pix[0]};
+				ip.putPixel(x+offsetX, y+offsetY, conv);
     		}
     	}
     }
@@ -253,9 +250,7 @@ public final class CVForgeConverter{
 	 * Covers special case if cvmat is actually a submatrix of ip.
      * Offset values define are to be used if cvmat is actually a submatrix.
      * @param cvmat Mat to convert.
-     * @param ip converted ColorProcessor
-     * @param offsetX offset for copying data
-     * @param offsetY offset for copying data
+     * @param ip converted ImageProcessor
      */
     protected static void toGrayProcessor(Mat cvmat, ImageProcessor ip){
     	toGrayProcessor(cvmat, ip, 0, 0);
